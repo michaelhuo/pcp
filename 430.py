@@ -30,9 +30,44 @@ class Solution:
                 
             return last
         
+        
+        def flattern_dfs(prev: 'Node', curr: 'Node') -> 'Node':
+            if not curr:
+                return prev
+            prev.next = curr
+            curr.prev = prev
+            next = curr.next
+            
+            tail = flattern_dfs(curr, curr.child)
+            curr.child = None
+            tail = flattern_dfs(tail, next)
+            return tail
+        
         if not head:
             return
-
-        recursive(head, None)
+        
+        pseudo_head = Node(0, None, head, None)
+        stack = []
+        prev = pseudo_head
+        stack.append(head)
+        
+        while stack:
+            curr = stack.pop()
+            prev.next = curr
+            curr.prev = prev
+            
+            if curr.next:
+                stack.append(curr.next)
+            if curr.child:
+                stack.append(curr.child)
+                curr.child = None
+            prev = curr
+        pseudo_head.next.prev = None
+        return pseudo_head.next
+    
+        #flattern_dfs(pseudo_head, head)
+        #pseudo_head.next.prev = None
+        return pseudo_head.next
+        #recursive(head, None)
 
         return head
